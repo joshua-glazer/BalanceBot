@@ -14,7 +14,7 @@
 
 ### Project Pages
 
-#### Balanduino
+##### Balanduino
 
 This is a cool project. Not sure if it's still being sold, but they have some nice documentation. Wish I knew what motors they were using, though...
 
@@ -22,7 +22,7 @@ This is a cool project. Not sure if it's still being sold, but they have some ni
 
 [Assembly guide](http://wiki.balanduino.net/Assembly_guide)
 
-#### BroBot
+##### BroBot
 
 Here's another cool project. Goes a bit more in depth into the control theory aspect of the robot.
 
@@ -33,7 +33,7 @@ Here's another cool project. Goes a bit more in depth into the control theory as
 ### Research Papers
 
 
-##### Go back
+###### Go back
 
 [BalanceBot Homepage](https://vashmata.github.io/BalanceBot/)
 
