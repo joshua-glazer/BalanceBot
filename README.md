@@ -8,19 +8,14 @@ The BalanceBot needs a structure, actuators, sensors, a microcontroller and othe
 
 Wheels, support structure, Arduino microcontroller, geared DC motors, motor drivers, battery, acceleromoeter/gyroscope combo, wires etc... If we want to get even more interesting, we could get a microcontroller with wifi capabilities and develop an app or use a controller or something.
 
-Most of these parts, if not all, will be purchased from <a href="https:\\www.robotshop.com">RobotShop</a>.
+Most of these parts, if not all, will be purchased from [RobotShop](https://robotshop.com).
+<a href="https:\\www.robotshop.com">RobotShop</a>.
 
 ![Image](Pictures/robotshop-logo-345x100-en.gif)
 
 ### Under Construction
 
 This website is still being set up, so lots of things are still tutorial text.
-
-You can use the [editor on GitHub](https://github.com/vashmata/BalanceBot/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
@@ -47,7 +42,3 @@ For more details see [GitHub Flavored Markdown](https://guides.github.com/featur
 ### Jekyll Themes
 
 Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/vashmata/BalanceBot/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
