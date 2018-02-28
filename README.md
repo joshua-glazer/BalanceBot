@@ -9,8 +9,8 @@ The BalanceBot needs a structure, actuators, sensors, a microcontroller and othe
 Wheels, support structure, Arduino microcontroller, geared DC motors, motor drivers, battery, acceleromoeter/gyroscope combo, wires etc... If we want to get even more interesting, we could get a microcontroller with wifi capabilities and develop an app or use a controller or something.
 
 Most of these parts, if not all, will be purchased from [RobotShop](www.robotshop.com).
-<a href="www.robotshop.com">RobotShop</a>
-![Image](BalanceBot/robotshop-logo-345x100-en.gif)
+
+![Image](Pictures/robotshop-logo-345x100-en.gif)
 
 ### Under Construction
 
