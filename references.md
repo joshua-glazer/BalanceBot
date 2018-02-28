@@ -22,6 +22,10 @@ This is a cool project. Not sure if it's still being sold, but they have some ni
 
 [Assembly guide](http://wiki.balanduino.net/Assembly_guide)
 
+[Original blog post](http://blog.tkjelectronics.dk/2012/03/the-balancing-robot/)
+
+[GitHub project](https://github.com/TKJElectronics/Balanduino/tree/master/Firmware/Balanduino)
+
 ##### BroBot
 
 Here's another cool project. Goes a bit more in depth into the control theory aspect of the robot.
@@ -32,6 +36,9 @@ Here's another cool project. Goes a bit more in depth into the control theory as
 
 ### Research Papers
 
+[idk1](https://kth.diva-portal.org/smash/get/diva2:916184/FULLTEXT01.pdf)
+
+[idk2](
 
 ###### Go back
 
