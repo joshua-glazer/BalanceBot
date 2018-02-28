@@ -1,4 +1,4 @@
-## BalanceBot Reference Page
+# BalanceBot Reference Page
 
 ### Videos
 
