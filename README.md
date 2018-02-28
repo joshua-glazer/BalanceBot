@@ -28,7 +28,7 @@ Most of these parts, if not all, will be purchased from [RobotShop](https://www.
 
 This website is still being set up, so lots of things are still tutorial text.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Markdown tips:
 
 ```markdown
 Syntax highlighted code block
