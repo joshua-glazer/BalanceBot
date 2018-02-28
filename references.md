@@ -38,9 +38,7 @@ Here's another cool project. Goes a bit more in depth into the control theory as
 
 [idk1](https://kth.diva-portal.org/smash/get/diva2:916184/FULLTEXT01.pdf)
 
-[idk2](
-
-###### Go back
+###### Go back:
 
 [BalanceBot Homepage](https://vashmata.github.io/BalanceBot/)
 
