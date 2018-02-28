@@ -26,6 +26,10 @@ This is a cool project. Not sure if it's still being sold, but they have some ni
 
 Here's another cool project. Goes a bit more in depth into the control theory aspect of the robot.
 
+[Project description](https://www.jjrobots.com/projects-2/b-robot/)
+
+[Assembly guide](https://www.jjrobots.com/b-robot-evo-2-assembly-guide/)
+
 ## Research Papers
 
 
