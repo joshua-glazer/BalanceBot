@@ -6,9 +6,19 @@ Two-wheel balancing robots have become quite popular in the past few years, so w
 
 ### Project Components
 
-The BalanceBot needs a structure, actuators, sensors, a microcontroller and other control circuitry, as well as a battery.
+The BalanceBot feedback loop will consist of actuators, sensors, a microcontroller and other control circuitry. It will also need a support structure and other components. Here's a preliminary list of required parts:
 
-Wheels, support structure, Arduino microcontroller, geared DC motors, motor drivers, battery, acceleromoeter/gyroscope combo, wires etc... If we want to get even more interesting, we could get a microcontroller with wifi capabilities and develop an app or use a controller or something.
+- Wheels
+- Support structure
+- Microcontroller
+- Geared DC motors
+- Motor drivers
+- Battery
+- Acceleromoeter/gyroscope combo
+- Wires
+- Etc...
+
+If we want to get even more interesting, we could get a microcontroller with wifi capabilities and develop an app or use a controller or something.
 
 Most of these parts, if not all, will be purchased from [RobotShop](https://www.robotshop.com).
 
