@@ -1,4 +1,19 @@
-## Welcome to GitHub Pages
+## Welcome to the BalanceBot homepage
+
+This project is part of the class 8358: Mechatronics II at Polytechnique Montreal. It's part of the mechatronics orientation for mechanical engineering students.
+
+### Project Components
+
+The BalanceBot needs a structure, actuators, sensors, a microcontroller and other control circuitry, as well as a battery.
+
+Wheels, support structure, Arduino microcontroller, geared DC motors, motor drivers, battery, acceleromoeter/gyroscope combo, wires etc... If we want to get even more interesting, we could get a microcontroller with wifi capabilities and develop an app or use a controller or something.
+
+Most of these parts, if not all, will be purchased from [RobotShop](www.robotshop.com).
+![Image](src)
+
+### Under Construction
+
+This website is still being set up, so lots of things are still tutorial text.
 
 You can use the [editor on GitHub](https://github.com/vashmata/BalanceBot/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
