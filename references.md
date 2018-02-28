@@ -1,6 +1,6 @@
 # BalanceBot Reference Page
 
-### Videos
+## Videos
 
 [This is a mini robot that can balance even with a bunch of stuff on it.](https://www.youtube.com/watch?v=w6VqASRawgg)
 
@@ -12,9 +12,9 @@
 
 [Compilation of 5 different projects. One of them is cool because it can lift itself up at the beginning. Another one shows schematics](https://www.youtube.com/watch?v=0xegrfraf4k)
 
-### Project Pages
+## Project Pages
 
-## Balanduino
+### Balanduino
 
 This is a cool project. Not sure if it's still being sold, but they have some nice documentation. Wish I knew what motors they were using, though...
 
@@ -22,15 +22,15 @@ This is a cool project. Not sure if it's still being sold, but they have some ni
 
 [Assembly guide](http://wiki.balanduino.net/Assembly_guide)
 
-## BroBot
+### BroBot
 
 Here's another cool project. Goes a bit more in depth into the control theory aspect of the robot.
 
-### Research Papers
+## Research Papers
 
 
 
 
-[BalanceBot Homepage]()
+[BalanceBot Homepage](BalanceBot)
 
 [Projects Homepage](https://vashmata.github.io)
