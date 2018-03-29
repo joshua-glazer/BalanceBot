@@ -1,11 +1,16 @@
-#include <Wire.h>
+#include <Wire.h> // for communication with IMU
+#include <I2Cdev.h> // for IMU calibration in particular
 #include <Kalman.h> // Source: https://github.com/TKJElectronics/KalmanFilter
 #include "KalmanJ.h" // put declarations here but haven't put definitions into .c or .cpp file yet
 #include <PID_v1.h>
 
 #define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+#define MPU6050_RA_XA_OFFS_H        0x06 // accel X register offset
+#define MPU6050_RA_YA_OFFS_H        0x08 // accel Y register offset
+#define MPU6050_RA_ZA_OFFS_H        0x0A // accel Z register offset
 
 /* IMU Data */
+extern const uint8_t IMUAddress;
 double accX, accY, accZ;
 double gyroX, gyroY, gyroZ;
 double gyroXrate, gyroYrate;
@@ -34,13 +39,17 @@ int stby=4;
 void setup() {
   Serial.begin(115200);
   initMPUcomm();
+
+  // calibration based on horizontal
+  I2Cdev::writeWord(IMUAddress, MPU6050_RA_XA_OFFS_H, -3565);
+  I2Cdev::writeWord(IMUAddress, MPU6050_RA_YA_OFFS_H, 250);
+  I2Cdev::writeWord(IMUAddress, MPU6050_RA_ZA_OFFS_H, 750);
+  
   delay(100); // Wait for sensor to stabilize
   initKalman();
   timer = micros();
 
-  // TODO: Make calibration routine
-  
-  //initialize PID stuff
+    //initialize PID stuff
   Input=roll; Setpoint=0; // this should become whatever we define at boot after calibration
   myPID.SetMode(AUTOMATIC);
 
@@ -63,6 +72,9 @@ void loop() {
   
   getAccelAngle();
 
+  // TODO: Make routine to define a 0 angle
+  // loop the part above in setup and average the result to find neutral position?
+  
   gyroXrate = gyroX / 131.0; // Convert to deg/s
   gyroYrate = gyroY / 131.0; // Convert to deg/s
   getKalmanAngle();
