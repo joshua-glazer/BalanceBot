@@ -15,7 +15,7 @@
  e-mail   :  vashmata@gmail.com
  */
  
- #include <I2Cdev.h> // for IMU calibration in particular
+#include <I2Cdev.h> // for IMU calibration in particular
 
 #define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 #define X_REGISTER_OFFSET 0x06 // accel X register offset
@@ -27,7 +27,7 @@
 
 uint8_t i2cData[14]; // Buffer for I2C data
 
-void initMPUcomm(){
+void initMPUcomm(){ // initializes I2C communication with the MPU6050. Uses multiple I2C libraries.
   Wire.begin();
 #if ARDUINO >= 157
   Wire.setClock(400000UL); // Set I2C frequency to 400kHz
@@ -55,7 +55,7 @@ void initMPUcomm(){
   I2Cdev::writeWord(IMUAddress, Z_REGISTER_OFFSET, Z_VALUE_OFFSET);
 }
 
-void initKalman(){
+void initKalman(){ // initializes the kalman filter
   /* Set kalman and gyro starting angle */
   while (i2cRead(0x3B, i2cData, 6));
   accX = (int16_t)((i2cData[0] << 8) | i2cData[1]);
@@ -72,7 +72,7 @@ void initKalman(){
   compAngleY = pitch;
 }
 
-void getMPUdata(){
+void getMPUdata(){ // obtains accel/gyro data from the MPU6050
   /* Update all the values */
   while (i2cRead(0x3B, i2cData, 14))
     ;
@@ -85,7 +85,10 @@ void getMPUdata(){
   gyroZ = (int16_t)((i2cData[12] << 8) | i2cData[13]);
 }
 
-void getAccelAngle(){
+void getAccelAngle(){ // calculates the angle directly from the accelerometer
+  getMPUdata();
+  dt = (double)(micros() - timer) / 1000000; // Calculate delta time
+  timer = micros();
   // Source: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf eq. 25 and eq. 26
   // atan2 outputs the value of -π to π (radians) - see http://en.wikipedia.org/wiki/Atan2
   // It is then converted from radians to degrees
@@ -98,7 +101,7 @@ void getAccelAngle(){
 #endif
 }
 
-void getKalmanAngle(){
+void getKalmanAngle(){ // calculates the angle using a kalman filter with inputs from external variables gyroXrate/gyroYrate
 #ifdef RESTRICT_PITCH
   // This fixes the transition problem when the accelerometer angle jumps between -180 and 180 degrees
   if ((roll < -90 && kalAngleX > 90) || (roll > 90 && kalAngleX < -90)) {
@@ -135,33 +138,53 @@ void getKalmanAngle(){
   //gyroYangle += kalmanY.getRate() * dt;
 }
 
-void getCompAngle(){
+void getCompAngle(){ // calculates the angle using a complementary filter with inputs from external variables gyroXrate/gyroYrate
   compAngleX = 0.93 * (compAngleX + gyroXrate * dt) + 0.07 * roll; // Calculate the angle using a Complimentary filter
   compAngleY = 0.93 * (compAngleY + gyroYrate * dt) + 0.07 * pitch;
 }
 
+void calibrateSensor(){ // waits for segway to be within +/- 5 degrees upright and then calculates a neutral position
+  while(abs(pitch)>5) getAccelAngle(); // wait for bot to be upright
+  neutralPos=pitch;
+  for (int i=0;i<samples;i++){
+    getAccelAngle();
+    neutralPos += pitch;
+    neutralPos /= 2;
+    Serial.print("pitch: ");Serial.print(pitch);Serial.print("\t");
+    Serial.print("average: ");Serial.println(neutralPos);
+    delay(2);
+  }
+  // blinks to alert user that calibration is complete
+  int blinkTime = 125;
+  digitalWrite(LED_BUILTIN, HIGH); delay(blinkTime);
+  digitalWrite(LED_BUILTIN, LOW); delay(blinkTime);
+  digitalWrite(LED_BUILTIN, HIGH); delay(blinkTime);
+  digitalWrite(LED_BUILTIN, LOW); delay(blinkTime);
+  digitalWrite(LED_BUILTIN, HIGH); delay(blinkTime);
+  digitalWrite(LED_BUILTIN, LOW); delay(blinkTime);
+}
 void printRawData(){
-  Serial.print(accX); Serial.print("\t");
-  Serial.print(accY); Serial.print("\t");
-  Serial.print(accZ); Serial.print("\t");
+  //Serial.print(accX); Serial.print("\t");
+  Serial.print("accY raw: "); Serial.print(accY); Serial.print("\t");
+  //Serial.print(accZ); Serial.print("\t");
 
-  Serial.print(gyroX); Serial.print("\t");
-  Serial.print(gyroY); Serial.print("\t");
-  Serial.print(gyroZ); Serial.print("\t");
+  //Serial.print(gyroX); Serial.print("\t");
+  Serial.print("gyroY raw: "); Serial.print(gyroY); Serial.print("\t");
+  //Serial.print(gyroZ); Serial.print("\t");
 
   Serial.print("\t");
 }
 
 void printAngles(){
-  Serial.print(roll); Serial.print("\t");
+  //Serial.print(roll); Serial.print("\t");
   //Serial.print(gyroXangle); Serial.print("\t");
-  Serial.print(compAngleX); Serial.print("\t");
-  Serial.print(kalAngleX); Serial.print("\t");
+  //Serial.print(compAngleX); Serial.print("\t");
+  //Serial.print(kalAngleX); Serial.print("\t");
 
-  Serial.print("\t");
+  //Serial.print("\t");
 
-  Serial.print(pitch); Serial.print("\t");
-  //Serial.print(gyroYangle); Serial.print("\t");
-  Serial.print(compAngleY); Serial.print("\t");
-  Serial.print(kalAngleY); Serial.print("\t");
+  Serial.print("Accel: "); Serial.print(pitch); Serial.print("\t");
+  Serial.print("Gyro: "); Serial.print(gyroYangle); Serial.print("\t");
+  Serial.print("Comp: "); Serial.print(compAngleY); Serial.print("\t");
+  Serial.print("Kalman: "); Serial.print(kalAngleY); Serial.print("\t");
 }

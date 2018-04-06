@@ -36,7 +36,7 @@ Now that all the components have been chosen and the structure has been designed
 
 The second-to-last stage in the project is to program the robot. There are two main segments to the code (plus a third, bonus segment if time permits). The first segment deals with the data obtained from the MPU6050 module. The module sends accelerometer and gyroscope data to the Arduino Uno, and the data is processed with a Kalman filter in order to obtain good angle data. The second segment is the feedback loop which takes the angle data as an input and outputs a signal which is used to control the motors. The details are found [here](code).
 
-## PID Tuning
+### PID Tuning
 
 Finally, we test the performance of the BalanceBot using the theoretical PID values and then tune the robot manually to make it actually work. The details are [here](tuning).
 

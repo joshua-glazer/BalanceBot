@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Joshua Glazer. All rights reserved.
+/* Copyright (C) 2018 Joshua Glazer, Justin Rochefort. All rights reserved.
 
  This software may be distributed and modified under the terms of the GNU
  General Public License version 2 (GPL2) as published by the Free Software
@@ -17,9 +17,9 @@
  
 #include <Wire.h> // for communication with IMU
 #include <Kalman.h> // Source: https://github.com/TKJElectronics/KalmanFilter
-#include <PID_v1.h>
+// #include <PID_v1.h> // not implemented in the end, a homemade PID is used
 
-/* IMU Data */
+/* IMU Variables */
 double accX, accY, accZ;
 //int16_t tempRaw; // for temperatures
 double gyroX, gyroY, gyroZ;
@@ -34,50 +34,64 @@ double kalAngleX, kalAngleY; // Calculated angle using a Kalman filter
 
 Kalman kalmanX; Kalman kalmanY; // Create the Kalman instances
 
-/* PID Data */
-double Setpoint, Input, Output;
-double Kp=1, Ki=.05, Kd=.25; // initial values
-//int pPot=0, iPot=1, dPot=2; // to adjust PID in real time
-PID myPID(&Input, &Output, &Setpoint,Kp,Ki,Kd, DIRECT);
+/* calibration routine */
+double neutralPos; // point of equilibrium calculated by calibrateSensor()
+int samples = 1000; // number of data points to take. this is a pretty good number
 
+/* Motor control pins */
 int pwmA=5, pwmB=6, stby=4; // pwm controls speed, stby allows motors to be used
 int motAdir1=7, motAdir2=8;
-int motBdir1=12, motBdir2=13;
+int motBdir1=11, motBdir2=12;
+
+/* PID Data */ // scrapped because using homemade stuff
+//double Setpoint, Input, Output;
+//double Kp=1, Ki=.05, Kd=.25; // initial values
+//int pPot=0, iPot=1, dPot=2; // to adjust PID in real time
+//PID myPID(&Input, &Output, &Setpoint,Kp,Ki,Kd, DIRECT);
+
+/* new PID Variables */
+//double Kp=1, Ki=.05, Kd=.25; // initial values
 
 void setup() {
+  /* initialize motor pins */
+  pinMode(stby, OUTPUT);
+  pinMode(motAdir1, OUTPUT);pinMode(motBdir1, OUTPUT);
+  pinMode(motAdir2, OUTPUT);pinMode(motBdir2, OUTPUT);
+  delay(10);
+ 
   Serial.begin(115200);
-  initMPUcomm();  
-  delay(100); // Wait for sensor to stabilize
-  initKalman();
-  timer = micros();
-
-  /* calibration loop */
+  pinMode(LED_BUILTIN, OUTPUT); // for calibration
   
-  /* initialize PID stuff */
-  Input=roll; Setpoint=0; // this should become whatever we define at boot after calibration
-  myPID.SetMode(AUTOMATIC);
+  /* accelerometer/gyroscope setup */
+  initMPUcomm(); // initializes I2C communication with MPU6050
+  delay(100); // Wait for sensor to stabilize
+  initKalman(); // initializes kalman filter
+  timer = micros();
+  calibrateSensor(); // waits for segway to be within +/- 5 degrees upright and then calculates a neutral position 
+  
+  /* initialize PID stuff */ // ignore this, our own PID implementation is used
+  //Input=roll; Setpoint=0; // this should become whatever we define at boot after calibration
+  //myPID.SetMode(AUTOMATIC);
 
-  /* initialize motor */
+  /* new PID initialization */
+  // we use neutralPos as the desired angle. it's calculated by calibrateSensor()
+  
+  /* initialize motors */ //currently for testing purposes, replace this when motor control is implemented
   digitalWrite(stby,HIGH);
   digitalWrite(motAdir1,HIGH);
   digitalWrite(motAdir2,LOW);
   digitalWrite(motBdir1,HIGH); // motors are physically wired backwards so coding is simpler
   digitalWrite(motBdir2,LOW);
-  //analogWrite(pwmPin,155);
+  analogWrite(pwmA,100); analogWrite(pwmB,100);
 }
 
 void loop() {
   /* Angle processing */
-  getMPUdata();
-  dt = (double)(micros() - timer) / 1000000; // Calculate delta time
-  timer = micros();
   getAccelAngle();
-
-  // TODO: Make routine to define a 0 angle
-  // loop the part above in setup and average the result to find neutral position?
   
   gyroXrate = gyroX / 131.0; // Convert to deg/s
   gyroYrate = gyroY / 131.0; // Convert to deg/s
+  
   getKalmanAngle();
   getCompAngle();
 
@@ -87,7 +101,7 @@ void loop() {
   if (gyroYangle < -180 || gyroYangle > 180)
     gyroYangle = kalAngleY;
 
-  /* PID adjustment */
+  /* PID adjustment */ // this is intended for adjustment during segway opetation
   // a value of 512 should correspond to the constants calculated in theory
   /*
   Kp = map(analogRead(pPot),0,1023,x,y);
@@ -96,7 +110,7 @@ void loop() {
   myPID.SetTunings(Kp, Ki, Kd);
   */
   
-  /* Motor control */
+  /* Motor control */ // this was scrapped, we will be using a homemade implementation
   // motor needs to change direction based on angle!
   /*
   Input=roll;
@@ -107,9 +121,10 @@ void loop() {
   analogWrite(pwmPin,motorSpeed);
   */
 
+  /* New Motor Control */
+
   /* Print Data */
-  //printRawData();
-  printAngles();
-  Serial.print("\r\n");
+  //printRawData(); Serial.print("\r\n");
+  printAngles(); Serial.print("\r\n");
   delay(2);
 }
