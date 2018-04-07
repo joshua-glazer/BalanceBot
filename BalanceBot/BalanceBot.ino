@@ -18,6 +18,11 @@
 #include <Wire.h> // for communication with IMU
 #include <Kalman.h> // Source: https://github.com/TKJElectronics/KalmanFilter
 // #include <PID_v1.h> // not implemented in the end, a homemade PID is used
+#include <SimpleTimer.h>           // http://arduino.cc/playground/Code/SimpleTimer
+SimpleTimer PIDtimer;
+
+// Samplte Time Hz
+const int sampleTime = 50; // milliseconds
 
 /* IMU Variables */
 double accX, accY, accZ;
@@ -39,25 +44,37 @@ double neutralPos; // point of equilibrium calculated by calibrateSensor()
 int samples = 1000; // number of data points to take. this is a pretty good number
 
 /* Motor control pins */
-int pwmA=5, pwmB=6, stby=4; // pwm controls speed, stby allows motors to be used
+//int pwmA=5, pwmB=6, stby=4; // pwm controls speed, stby allows motors to be used
+//int motAdir1=7, motAdir2=8;
+//int motBdir1=11, motBdir2=12;
+// keep in mind that pin 13 is used for the built-in LED
+
+/*Motor pins*/
+int stby=4;
+int PWMA=5, PWMB=6; //Speed control
 int motAdir1=7, motAdir2=8;
 int motBdir1=11, motBdir2=12;
 
 /* PID Data */ // scrapped because using homemade stuff
 //double Setpoint, Input, Output;
-//double Kp=1, Ki=.05, Kd=.25; // initial values
+//double Kp=1, Ki=1, Kd=1; // initial values
 //int pPot=0, iPot=1, dPot=2; // to adjust PID in real time
 //PID myPID(&Input, &Output, &Setpoint,Kp,Ki,Kd, DIRECT);
 
 /* new PID Variables */
-//double Kp=1, Ki=.05, Kd=.25; // initial values
+float Kp=800, Ki=1, Kd=600; // initial values
 
 void setup() {
   /* initialize motor pins */
   pinMode(stby, OUTPUT);
-  pinMode(motAdir1, OUTPUT);pinMode(motBdir1, OUTPUT);
-  pinMode(motAdir2, OUTPUT);pinMode(motBdir2, OUTPUT);
-  delay(10);
+  pinMode(PWMA, OUTPUT);
+  pinMode(motAdir1, OUTPUT);
+  pinMode(motAdir2, OUTPUT);
+  
+  pinMode(PWMB, OUTPUT);
+  pinMode(motBdir1, OUTPUT);
+  pinMode(motBdir2, OUTPUT);
+  //delay(10);
  
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT); // for calibration
@@ -77,15 +94,21 @@ void setup() {
   // we use neutralPos as the desired angle. it's calculated by calibrateSensor()
   
   /* initialize motors */ //currently for testing purposes, replace this when motor control is implemented
-  digitalWrite(stby,HIGH);
+  /*digitalWrite(stby,HIGH);
   digitalWrite(motAdir1,HIGH);
   digitalWrite(motAdir2,LOW);
   digitalWrite(motBdir1,HIGH); // motors are physically wired backwards so coding is simpler
   digitalWrite(motBdir2,LOW);
-  analogWrite(pwmA,100); analogWrite(pwmB,100);
+  analogWrite(pwmA,100); analogWrite(pwmB,100);*/
+
+  //Timer setup, runs PIDcontrol() every sampleTime. code in MotorControl.ino
+  PIDtimer.setInterval(sampleTime, PIDcontrol);
+  digitalWrite(stby,HIGH); // allows motor driver to control motors
 }
 
 void loop() {
+  PIDtimer.run();  //Start clock
+  
   /* Angle processing */
   getAccelAngle();
   
@@ -100,7 +123,7 @@ void loop() {
     gyroXangle = kalAngleX;
   if (gyroYangle < -180 || gyroYangle > 180)
     gyroYangle = kalAngleY;
-
+  
   /* PID adjustment */ // this is intended for adjustment during segway opetation
   // a value of 512 should correspond to the constants calculated in theory
   /*
@@ -121,10 +144,8 @@ void loop() {
   analogWrite(pwmPin,motorSpeed);
   */
 
-  /* New Motor Control */
-
   /* Print Data */
   //printRawData(); Serial.print("\r\n");
-  printAngles(); Serial.print("\r\n");
+  //printAngles(); Serial.print("\r\n");
   delay(2);
 }
